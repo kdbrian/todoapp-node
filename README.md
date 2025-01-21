@@ -1,6 +1,7 @@
-Here’s a detailed `README.md` for your project:
 # To-Do List REST API
 A simple REST API for managing a to-do list, built with Node.js, Express, and Swagger for API documentation.
+
+## Problem statement.
 
 ## Table of Contents
 - [Project Structure](#project-structure)
@@ -16,11 +17,14 @@ The project is organized as follows:
 
 ```
 ├── openapi-3.0.yml        # OpenAPI specification file
-├── index.js               # Entry point for the application
+├── main.js               # Entry point for the application
+├── app.js               # Express app config
 ├── middleware
-│   └── swagger.js         # Swagger middleware configuration
+│   └── swagger.conf.js         # Swagger middleware configuration
 ├── routes
 │   └── todos.js           # Routes for managing to-do items
+├── tests
+│   └── todoapp.test.js
 ├── package.json           # Project dependencies and scripts
 ├── package-lock.json
 ├── README.md              # Project documentation
@@ -40,13 +44,20 @@ Ensure you have the following installed:
 1. Clone the repository:
    ```bash
    git https://github.com/kdbrian/todoapp-node.git
-   cd todoapp-node
    ```
+2. Change the working directory
+    ```bash
+    cd todoapp-node
+    ```
 
-2. Install dependencies:
+3. Install dependencies:
    ```bash
    npm install
    ```
+4. Run tests
+    ```bash
+    npm test
+    ```
 
 ## Usage
 

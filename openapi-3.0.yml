@@ -37,9 +37,17 @@ paths:
         400:
           description: Bad request
     get:
+      summary: Fetches all todos
       responses:
         200:
           description: A list of todos
+    delete:
+      summary: Clears all todos
+      responses:
+        204:
+          description: Delete all todos
+
+
 
   /api/todos/{id}:
     get:
