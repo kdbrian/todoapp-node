@@ -7,11 +7,11 @@ const morgan = require('morgan');
 const app = express()
 
 
-// Middleware
+// Middlewares
 app.use(bodyParser.json());
 swaggerConf(app)
 
-
+//entry point
 app.use('/api', todoRouter)
 
 
