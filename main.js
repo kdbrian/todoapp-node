@@ -1,79 +1,54 @@
+// Import required modules
 const express = require('express');
 const bodyParser = require('body-parser');
 const { v4: uuidv4 } = require('uuid');
-const swaggerUi = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
-const morgan = require('morgan');
-
+const swaggerUi = require('swagger-ui-express');
 
 const app = express();
-const port = process.env.PORT || 6969
+const port = 6969;
 
-app.use(bodyParser.json());
-
-if ((process.env.NODE_ENV || 'dev' ) == 'dev')
-    app.use(morgan('dev'))
-    
-
-
-// In-memory persistence
-let todos = [];
-
-const swaggerOpt = {
-
-	swaggerDefinition: {
-		myapi:'3.0.0',
-		info : {
-			title : 'todolist-api',
-			version: '1.0.0',
-			description:'todo list app api'
-		},
-		servers:[
-			{ url : `http://localhost:${port}`}
-		]
-	},
-
-	apis: ['./*.js']
-
+// Swagger options
+const swaggerOptions = {
+    swaggerDefinition: {
+        openapi: '3.0.0',
+        info: {
+            title: 'To-Do List API',
+            version: '1.0.0',
+            description: 'API for managing a to-do list',
+        },
+        servers: [
+            {
+                url: `http://localhost:${port}`,
+            },
+        ],
+    },
+    apis: ['./openapi-3.0.yml'],
 };
 
-const docs = swaggerJsDoc(swaggerOpt)
+app.get('/', (req, res) => {
+    res.status(200).json({
+        success:true,
+        paths : [
+            {"swagger-ui" : "/api-docs"},
+        ]
+    })
+})
 
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-app.use('/', swaggerUi.serve, swaggerUi.setup(docs));
+// Middleware
+app.use(bodyParser.json());
 
-/**
- * @swagger
- * /todos:
- *   get:
- *     summary: Get all to-do items
- *     responses:
- *       200:
- *         description: List of to-do items
- */
+// In-memory data store
+let todos = [];
+
+// Routes
 app.get('/todos', (req, res) => {
     res.status(200).json({ success: true, data: todos });
 });
 
-
-/**
- * @swagger
- * /todos/{id}:
- *   get:
- *     summary: Get a single to-do item by ID
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: The to-do ID
- *     responses:
- *       200:
- *         description: A single to-do item
- *       404:
- *         description: To-Do not found
- */
 app.get('/todos/:id', (req, res) => {
     const { id } = req.params;
     const todo = todos.find(item => item.id === id);
@@ -85,32 +60,6 @@ app.get('/todos/:id', (req, res) => {
     res.status(200).json({ success: true, data: todo });
 });
 
-
-/**
- * @swagger
- * /todos:
- *   post:
- *     summary: Create a new to-do item
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - title
- *               - description
- *             properties:
- *               title:
- *                 type: string
- *               description:
- *                 type: string
- *     responses:
- *       201:
- *         description: To-Do created successfully
- *       400:
- *         description: Bad request
- */
 app.post('/todos', (req, res) => {
     const { title, description } = req.body;
 
@@ -130,37 +79,6 @@ app.post('/todos', (req, res) => {
     res.status(201).json({ success: true, data: newTodo });
 });
 
-/**
- * @swagger
- * /todos/{id}:
- *   put:
- *     summary: Update an existing to-do item
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: The to-do ID
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               title:
- *                 type: string
- *               description:
- *                 type: string
- *               completed:
- *                 type: boolean
- *     responses:
- *       200:
- *         description: To-Do updated successfully
- *       404:
- *         description: To-Do not found
- */
 app.put('/todos/:id', (req, res) => {
     const { id } = req.params;
     const { title, description, completed } = req.body;
@@ -182,24 +100,6 @@ app.put('/todos/:id', (req, res) => {
     res.status(200).json({ success: true, data: updatedTodo });
 });
 
-/**
- * @swagger
- * /todos/{id}:
- *   delete:
- *     summary: Delete a to-do item
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: The to-do ID
- *     responses:
- *       200:
- *         description: To-Do deleted successfully
- *       404:
- *         description: To-Do not found
- */
 app.delete('/todos/:id', (req, res) => {
     const { id } = req.params;
 
@@ -213,6 +113,7 @@ app.delete('/todos/:id', (req, res) => {
     res.status(200).json({ success: true, message: 'To-Do deleted successfully' });
 });
 
+// Start the server
 app.listen(port, () => {
     console.log(`To-Do List API running at http://localhost:${port}`);
 });
