@@ -15,9 +15,17 @@ exports.defaultPathHandler = (req, res) => {
 }
 
 exports.getAllTodos = (req, res) => {
-    const { isDone } = req.query
-    res.status(200).json({ success: true, data: isDone !=  undefined ? todos.filter((todo) => todo.completed === isDone ) : todos });
-}
+    const { isDone } = req.query;
+    const isDoneBoolean = isDone === 'true'; // Convert to boolean
+
+    res.status(200).json({ 
+        success: true, 
+        data: isDone !== undefined 
+            ? todos.filter((todo) => todo.completed === isDoneBoolean) 
+            : todos 
+    });
+};
+
 
 exports.createTodo = (req, res) => {
     const { title, description } = req.body;
@@ -81,4 +89,11 @@ exports.deleteTodoWithId = (req, res) => {
 
     todos.splice(todoIndex, 1);
     res.status(200).json({ success: true, message: 'To-Do deleted successfully' });
+}
+
+exports.clearTodos = (req, res) => {
+    todos = []
+    res.status(200).json({
+        success : true
+    })
 }

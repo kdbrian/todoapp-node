@@ -4,7 +4,8 @@ const {
     createTodo,
     deleteTodoWithId,
     updateTodoWithId,
-    getTodoWithId
+    getTodoWithId,
+    clearTodos
 } = require('../controller/todo')
 
 
@@ -15,6 +16,7 @@ Router.get('/', defaultPathHandler)
       .post('/todos', createTodo)
       .put('/todos/:id', updateTodoWithId)
       .delete('/todos/:id', deleteTodoWithId)
+      .delete('/todos/clear/', clearTodos)
 
 
 module.exports = Router
