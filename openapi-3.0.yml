@@ -1,0 +1,102 @@
+openapi: '3.0.3'
+info:
+  title: API Title
+  version: '1.0'
+servers:
+  - url: http://localhost:6969/
+
+paths:
+
+  /:
+    get:
+      summary: Get the swagger docs
+      responses:
+        '200':
+          description: Displays the swagger-ui
+
+  /todos:
+    post:
+      summary: Create a new to-do item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - description
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+      responses:
+        201:
+          description: To-Do created successfully
+        400:
+          description: Bad request
+    get:
+      responses:
+        '200':
+          description: A list of todos
+
+  /todos/{id}:
+    get:
+      summary: Get a single to-do item by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The to-do ID
+      responses:
+        200:
+          description: A single to-do item
+        404:
+          description: To-Do not found
+
+    put:
+      summary: Update an existing to-do item
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The to-do ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                completed:
+                  type: boolean
+      responses:
+        200:
+          description: To-Do updated successfully
+        404:
+          description: To-Do not found
+
+    delete:
+      summary: Delete a to-do item
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The to-do ID
+      responses:
+        200:
+          description: To-Do deleted successfully
+        404:
+          description: To-Do not found
+  
