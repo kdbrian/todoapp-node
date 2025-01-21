@@ -1,27 +1,6 @@
-// Import required modules
-const express = require('express');
-const bodyParser = require('body-parser');
-const app = express();
-const swaggerConf = require('./middleware/swagger.conf')
-const todoRouter = require('./routes/todos');
-const morgan = require('morgan');
-
-
-
-// Middleware
-app.use(bodyParser.json());
-swaggerConf(app)
-
-
-app.use('/api', todoRouter)
-
-
-if ((process.env.NODE_ENV || 'dev') == 'dev')
-    app.use(morgan('dev'))
-
 const port = process.env.PORT || 6969 ;
 
-
+const app = require('./app')
 
 // Start the server
 app.listen(port, () => {
